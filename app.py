@@ -41,9 +41,10 @@ if st.button("Get Forecast"):
         }, inplace=True)
         df['MODULE_TEMPERATURE'] = df['AMBIENT_TEMPERATURE'] + 0.035 * df['IRRADIATION']
 
-        df['DC_POWER'] = df['IRRADIATION'] * 500 * 0.18   
-        df['DAILY_YIELD'] = df['DC_POWER'] / 1000         
+        df['DAILY_YIELD'] = df['IRRADIATION'] * 2.5
         df['TOTAL_YIELD'] = 250000 + df['DAILY_YIELD'].cumsum()
+        df['DC_POWER'] = df['IRRADIATION'] * 4.5
+
 
         df_model_input = df[['DAILY_YIELD', 'TOTAL_YIELD', 'AMBIENT_TEMPERATURE',
                              'MODULE_TEMPERATURE', 'IRRADIATION', 'DC_POWER']]
