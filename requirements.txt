@@ -1,6 +1,5 @@
 streamlit
+requests
+pandas
 joblib
 scikit-learn
-Pillow
-python-dotenv
-pandas
