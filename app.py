@@ -65,3 +65,5 @@ if st.button("Get Forecast"):
 
         # Plot
         st.line_chart(data=df, x='time', y='Predicted_Output')
+        st.line_chart(data=df, x='time', y='IRRADIATION')
+
