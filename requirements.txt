@@ -1,7 +1,6 @@
-flask
-requests
-scikit-learn
+streamlit
 joblib
-gunicorn
-pandas 
-numpy
+scikit-learn
+Pillow
+python-dotenv
+pandas
