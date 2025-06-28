@@ -9,23 +9,47 @@ model = joblib.load('solar_model.pkl')
 WEATHER_API_KEY = "68689ce9502147d0bc444703252806"  
 
 def get_weather(location, date):
-    geo_url = f"http://api.weatherapi.com/v1/search.json?key={WEATHER_API_KEY}&q={location}"
-    geo_data = requests.get(geo_url).json()
-    lat, lon = geo_data[0]['lat'], geo_data[0]['lon']
-    
-    forecast_url = f"http://api.weatherapi.com/v1/forecast.json?key={WEATHER_API_KEY}&q={lat},{lon}&days=1&dt={date}"
-    weather_data = requests.get(forecast_url).json()
-    
-    noon_condition = next(h for h in weather_data['forecast']['forecastday'][0]['hour'] 
-                         if h['time'].endswith('12:00'))
-    
-    return {
-        'irradiance': noon_condition.get('solar_radiation', 800),  # W/m² (default if missing)
-        'temp': noon_condition['temp_c'],
-        'location': geo_data[0]['name'],
-        'date': date
-    }
-
+    try:
+        geo_url = f"http://api.weatherapi.com/v1/search.json?key={WEATHER_API_KEY}&q={location}"
+        geo_response = requests.get(geo_url)
+        geo_response.raise_for_status()  # Raises HTTPError for bad responses
+        geo_data = geo_response.json()
+        
+        if not geo_data or not isinstance(geo_data, list):
+            raise ValueError(f"No location found for '{location}'")
+        
+        first_result = geo_data[0]
+        lat, lon = first_result.get('lat'), first_result.get('lon')
+        if not lat or not lon:
+            raise ValueError("Lat/Lon missing in API response")
+        
+        forecast_url = f"http://api.weatherapi.com/v1/forecast.json?key={WEATHER_API_KEY}&q={lat},{lon}&days=1&dt={date}"
+        forecast_response = requests.get(forecast_url)
+        forecast_response.raise_for_status()
+        weather_data = forecast_response.json()
+        
+        forecast_day = weather_data.get('forecast', {}).get('forecastday', [{}])[0]
+        hour_data = next(
+            (h for h in forecast_day.get('hour', []) if h.get('time', '').endswith('12:00')),
+            {'temp_c': 25, 'solar_radiation': 800}  # Default values
+        )
+        
+        return {
+            'irradiance': hour_data.get('solar_radiation', 800),
+            'temp': hour_data.get('temp_c', 25),
+            'location': first_result.get('name', location),
+            'date': date
+        }
+        
+    except Exception as e:
+        print(f"Weather API Error: {str(e)}")
+        return {
+            'irradiance': 800,  
+            'temp': 25,
+            'location': location,
+            'date': date,
+            'error': str(e) 
+        }
 @app.route('/', methods=['GET', 'POST'])
 def index():
     if request.method == 'POST':
@@ -44,7 +68,6 @@ def index():
 
 if __name__ == '__main__':
     app.run(debug=True)
-# Add this at the bottom of app.py:
 if __name__ == '__main__':
     port = int(os.environ.get("PORT", 5000))  # For Render's port binding
     app.run(host='0.0.0.0', port=port)
