@@ -5,16 +5,13 @@ from joblib import load
 import numpy as np
 
 st.title("☀️ Solar Forecast App")
-st.write("Predict solar output for a location and date using weather data.")
+st.write("This app predicts the expected solar power output(in Watts) for each hour of the selected day using weather forecast data.")
 
-# Inputs
-location = st.text_input("Enter location (e.g. Bhopal):", "Bhopal")
+location = st.text_input("Enter location:", "Bhopal")
 date = st.date_input("Select date for forecast:")
 
-# Load model
 model = load("solar_model.pkl")
 
-# Geocoding helper
 def get_lat_lon(city):
     geo_url = f"https://geocoding-api.open-meteo.com/v1/search?name={city}"
     response = requests.get(geo_url)
@@ -44,14 +41,10 @@ if st.button("Get Forecast"):
         }, inplace=True)
         df['MODULE_TEMPERATURE'] = df['AMBIENT_TEMPERATURE'] + 0.035 * df['IRRADIATION']
 
-        # Simulate missing plant data
-        # Simulate based on IRRADIATION
-        df['DAILY_YIELD'] = df['IRRADIATION'] * 2.5
+        df['DC_POWER'] = df['IRRADIATION'] * 500 * 0.18   
+        df['DAILY_YIELD'] = df['DC_POWER'] / 1000         
         df['TOTAL_YIELD'] = 250000 + df['DAILY_YIELD'].cumsum()
-        df['DC_POWER'] = df['IRRADIATION'] * 5.0
 
-
-        # Reorder columns
         df_model_input = df[['DAILY_YIELD', 'TOTAL_YIELD', 'AMBIENT_TEMPERATURE',
                              'MODULE_TEMPERATURE', 'IRRADIATION', 'DC_POWER']]
 
