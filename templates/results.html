@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Results</title>
+    <link rel="stylesheet" href="/static/styles.css">
+</head>
+<body>
+    <div class="container">
+        <h1>🔮 Prediction Results</h1>
+        
+        <div class="card">
+            <h2>{{ location }}</h2>
+            <p>📅 {{ date }}</p>
+            
+            <div class="metrics">
+                <div>
+                    <h3>Predicted Solar Energy</h3>
+                    <p class="prediction">{{ prediction }} kW</p>
+                </div>
+                <div>
+                    <h3>Weather Conditions</h3>
+                    <p>☀️ Irradiance: {{ irradiance }} W/m²</p>
+                    <p>🌡️ Temperature: {{ temp }}°C</p>
+                </div>
+            </div>
+            
+            <a href="/" class="button">New Prediction</a>
+        </div>
+    </div>
+</body>
+</html>
