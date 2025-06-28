@@ -61,3 +61,13 @@ if st.button("Get Forecast"):
         st.line_chart(data=df, x='time', y='Predicted_Output')
         st.line_chart(data=df, x='time', y='IRRADIATION')
 
+with st.sidebar:
+    st.markdown("### ⚙️ Assumed Solar Plant Specs")
+    st.markdown("""
+    - **System Size**: 100 kW  
+    - **Panel Efficiency**: 18%  
+    - **Tilt Angle**: 30°  
+    - **Panel Area**: 600 m²  
+
+    These are assumed values used to simulate power output from weather data.
+    """)
