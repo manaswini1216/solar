@@ -44,3 +44,7 @@ def index():
 
 if __name__ == '__main__':
     app.run(debug=True)
+# Add this at the bottom of app.py:
+if __name__ == '__main__':
+    port = int(os.environ.get("PORT", 5000))  # For Render's port binding
+    app.run(host='0.0.0.0', port=port)
