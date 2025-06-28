@@ -5,6 +5,12 @@
     <link rel="stylesheet" href="/static/styles.css">
 </head>
 <body>
+    {% if error %}
+  <div class="alert alert-warning">
+    ⚠️ Weather data incomplete: {{ error }}<br>
+    Using default values for prediction.
+  </div>
+{% endif %}
     <div class="container">
         <h1>🔮 Prediction Results</h1>
         
