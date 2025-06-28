@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Solar Energy Predictor</title>
+    <link rel="stylesheet" href="/static/styles.css">
+</head>
+<body>
+    <div class="container">
+        <h1>☀️ Solar Energy Forecast</h1>
+        <form method="POST">
+            <label for="location">Location:</label>
+            <input type="text" id="location" name="location" required 
+                   placeholder="e.g., New York">
+            
+            <label for="date">Date:</label>
+            <input type="date" id="date" name="date" 
+                   value="{{ default_date }}" min="{{ default_date }}">
+            
+            <button type="submit">Predict</button>
+        </form>
+    </div>
+</body>
+</html>
