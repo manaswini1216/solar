@@ -45,9 +45,11 @@ if st.button("Get Forecast"):
         df['MODULE_TEMPERATURE'] = df['AMBIENT_TEMPERATURE'] + 0.035 * df['IRRADIATION']
 
         # Simulate missing plant data
-        df['DAILY_YIELD'] = 1500
-        df['TOTAL_YIELD'] = 250000
-        df['DC_POWER'] = 3200
+        # Simulate based on IRRADIATION
+        df['DAILY_YIELD'] = df['IRRADIATION'] * 2.5
+        df['TOTAL_YIELD'] = 250000 + df['DAILY_YIELD'].cumsum()
+        df['DC_POWER'] = df['IRRADIATION'] * 5.0
+
 
         # Reorder columns
         df_model_input = df[['DAILY_YIELD', 'TOTAL_YIELD', 'AMBIENT_TEMPERATURE',
